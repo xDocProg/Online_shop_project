@@ -7,6 +7,8 @@ from users.managers import CustomUserManager
 
 
 class CustomUser(AbstractUser):
+    """ Создаем модель пользователя """
+
     username = None
 
     email = models.EmailField(unique=True)
@@ -25,6 +27,8 @@ class CustomUser(AbstractUser):
 
 
 class ConfirmationCode(models.Model):
+    """ Создаем модель для подтверждения кода электронной почты """
+
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
     code = models.CharField(max_length=6)
     created_at = models.DateTimeField(auto_now_add=True)

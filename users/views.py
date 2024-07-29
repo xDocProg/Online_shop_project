@@ -88,7 +88,7 @@ class LoginView(generics.GenericAPIView):
     @extend_schema(
         tags=['Вход'],
         summary='Вход в систему',
-        description='Аутентифицирует пользователя и возвразщает JWT токены',
+        description='Аутентифицирует пользователя и возвращает JWT токены',
         request=LoginSerializer
     )
     def post(self, request, *args, **kwargs):
