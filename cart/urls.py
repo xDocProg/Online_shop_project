@@ -1,13 +1,9 @@
-from django.urls import path, include
-from rest_framework.routers import DefaultRouter
-from .views import CartViewSet, CartItemViewSet
-
-
-router = DefaultRouter()
-router.register(r'carts', CartViewSet)
-router.register(r'cart-items', CartItemViewSet)
+from django.urls import path
+from .views import CartDetailView, AddToCartView, RemoveFromCartView
 
 
 urlpatterns = [
-    path('', include(router.urls)),
+    path('', CartDetailView.as_view(), name='detail-cart'),
+    path('add/', AddToCartView.as_view(), name='add-card'),
+    path('remove/<int:pk>/', RemoveFromCartView.as_view(), name='remove-cart'),
 ]
