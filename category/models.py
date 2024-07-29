@@ -10,3 +10,6 @@ class Category(models.Model):
         blank=True,
         related_name='subcategories'
     )
+
+    def __str__(self):
+        return self.name
