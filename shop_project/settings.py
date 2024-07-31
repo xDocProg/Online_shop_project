@@ -33,6 +33,10 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
+INTERNAL_IPS = [
+    "127.0.0.1",
+]
+
 
 # Application definition
 
@@ -53,6 +57,7 @@ INSTALLED_APPS = [
     'payment',
 
     'rest_framework',
+    'debug_toolbar',
     'drf_spectacular',
     'rest_framework_simplejwt',
     'corsheaders',
@@ -92,7 +97,9 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
     'corsheaders.middleware.CorsMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
 ROOT_URLCONF = 'shop_project.urls'

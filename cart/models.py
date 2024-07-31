@@ -12,7 +12,7 @@ class Cart(models.Model):
     def __str__(self):
         return f'Корзина пользователя: {self.user}'
 
-    def total_price(self):
+    def total_price(self) -> float:
         return sum(item.total_price() for item in self.items.all())
 
 
@@ -26,7 +26,7 @@ class CartItem(models.Model):
     def __str__(self):
         return f'{self.quantity} {self.product.name}'
 
-    def total_price(self):
+    def total_price(self) -> float:
         return self.quantity * self.product.price
 
 

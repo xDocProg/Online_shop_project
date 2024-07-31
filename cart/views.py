@@ -30,6 +30,7 @@ class RemoveFromCartView(generics.DestroyAPIView):
     """ APIView для удаления товара из корзины """
 
     queryset = CartItem.objects.all()
+    serializer_class = CartItemSerializer
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
