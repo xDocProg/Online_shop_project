@@ -5,6 +5,8 @@ from users.models import CustomUser
 
 
 class Order(models.Model):
+    """ Модель заказа пользователя """
+
     STATUS_CHOICES = [
         ('pending', 'Ожидание'),
         ('processing', 'В обработке'),

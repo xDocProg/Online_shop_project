@@ -6,6 +6,8 @@ from .serializers import OrderSerializer
 
 
 class OrderListCreateView(generics.ListCreateAPIView):
+    """ APIView для создания заказа """
+
     serializer_class = OrderSerializer
     permission_classes = [IsAuthenticated]
 

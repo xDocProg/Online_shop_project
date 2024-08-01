@@ -5,6 +5,8 @@ from .models import Order
 
 
 class OrderSerializer(serializers.ModelSerializer):
+    """ Сериализатор для создания заказа """
+
     cart_items = CartItemSerializer(source='cart.items', many=True, read_only=True)
 
     class Meta:

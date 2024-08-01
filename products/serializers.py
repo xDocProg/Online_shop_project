@@ -3,7 +3,11 @@ from .models import Product
 
 
 class ProductSerializer(serializers.ModelSerializer):
+    average_rating = serializers.FloatField(read_only=True)
+
     class Meta:
         model = Product
-        fields = ('name', 'description', 'price', 'category')
+        fields = ['name', 'description', 'price', 'category', 'average_rating']
+
+
 
