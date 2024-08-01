@@ -5,6 +5,8 @@ from users.models import CustomUser
 
 
 class Review(models.Model):
+    """ Модель отзывов """
+
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='reviews')
     rating = models.IntegerField(choices=[
