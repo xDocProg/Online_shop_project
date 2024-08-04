@@ -31,7 +31,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['*']
 
 INTERNAL_IPS = [
     "127.0.0.1",
@@ -85,8 +85,11 @@ SPECTACULAR_SETTINGS = {
     'DESCRIPTION': 'Marketplace Swagger API description',
     'VERSION': '1.0.0',
     'SERVE_INCLUDE_SCHEMA': False,
+    "SWAGGER_UI_SETTINGS": {
+        "filter": True,
+    },
+    'COMPONENT_SPLIT_REQUEST': True,
     'SCHEMA_PATH_PREFIXES': ['/'],
-    'TAGS': [],
 }
 
 

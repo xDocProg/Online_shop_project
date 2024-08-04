@@ -8,6 +8,7 @@ from .serializers import UserRegistrationSerializer, ConfirmEmailSerializer, Log
 from drf_spectacular.utils import extend_schema
 
 
+@extend_schema(tags=['Вход и регистрация'])
 class RegisterViewSet(generics.CreateAPIView):
     """ APIView для регистрации пользователя """
 
@@ -15,7 +16,6 @@ class RegisterViewSet(generics.CreateAPIView):
     permission_classes = [AllowAny]
 
     @extend_schema(
-        tags=['Регистрация'],
         summary="Регистрация нового пользователя",
         description='Создает нового пользователя и отправляет код подтверждения на email',
         request=UserRegistrationSerializer
@@ -32,6 +32,7 @@ class RegisterViewSet(generics.CreateAPIView):
         )
 
 
+@extend_schema(tags=['Вход и регистрация'])
 class ConfirmEmailView(generics.GenericAPIView):
     """ APIView для подтверждения кода для email """
 
@@ -79,6 +80,7 @@ class ConfirmEmailView(generics.GenericAPIView):
             return Response({'detail': 'Код подтверждения не найден'}, status=status.HTTP_404_NOT_FOUND)
 
 
+@extend_schema(tags=['Вход и регистрация'])
 class LoginView(generics.GenericAPIView):
     """ APIView для входа в систему """
 
@@ -86,7 +88,6 @@ class LoginView(generics.GenericAPIView):
     permission_classes = [AllowAny]
 
     @extend_schema(
-        tags=['Вход'],
         summary='Вход в систему',
         description='Аутентифицирует пользователя и возвращает JWT токены',
         request=LoginSerializer

@@ -22,6 +22,8 @@ class CartDetailView(generics.RetrieveAPIView):
         cart, created = Cart.objects.get_or_create(user=self.request.user)
         return cart
 
+# -------------------------------------------------------------------------
+
 
 @extend_schema_view(
     post=extend_schema(
@@ -40,6 +42,8 @@ class AddToCartView(generics.CreateAPIView):
         cart, created = Cart.objects.get_or_create(user=self.request.user)
         serializer.save(cart=cart)
 
+
+# -------------------------------------------------------------------------
 
 @extend_schema_view(
     delete=extend_schema(
