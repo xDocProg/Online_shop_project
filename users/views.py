@@ -1,3 +1,4 @@
+from django.utils.decorators import method_decorator
 from rest_framework import generics, status
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
@@ -6,6 +7,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from .models import ConfirmationCode, CustomUser
 from .serializers import UserRegistrationSerializer, ConfirmEmailSerializer, LoginSerializer
 from drf_spectacular.utils import extend_schema
+from django_ratelimit.decorators import ratelimit
 
 
 @extend_schema(tags=['Вход и регистрация'])
@@ -20,6 +22,7 @@ class RegisterViewSet(generics.CreateAPIView):
         description='Создает нового пользователя и отправляет код подтверждения на email',
         request=UserRegistrationSerializer
     )
+    @method_decorator(ratelimit(key='ip', rate='5/m', block=True))
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -92,6 +95,7 @@ class LoginView(generics.GenericAPIView):
         description='Аутентифицирует пользователя и возвращает JWT токены',
         request=LoginSerializer
     )
+    @method_decorator(ratelimit(key='ip', rate='10/m', block=True))
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)

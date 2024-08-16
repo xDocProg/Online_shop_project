@@ -1,5 +1,6 @@
+from rest_framework.permissions import IsAdminUser, AllowAny
 from django.db.models import Avg
-from drf_spectacular.utils import extend_schema_view, extend_schema
+from drf_spectacular.utils import extend_schema
 from rest_framework import generics
 
 from .models import Product
@@ -10,6 +11,11 @@ from .serializers import ProductSerializer
 class ProductListCreateAPIView(generics.ListCreateAPIView):
     queryset = Product.objects.annotate(average_rating=Avg('reviews__rating'))
     serializer_class = ProductSerializer
+
+    def get_permissions(self):
+        if self.request.method in ['POST']:
+            return [IsAdminUser()]
+        return [AllowAny()]
 
     @extend_schema(
         summary='Получить список продуктов',
@@ -33,6 +39,11 @@ class ProductListCreateAPIView(generics.ListCreateAPIView):
 class ProductDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Product.objects.annotate(average_rating=Avg('reviews__rating'))
     serializer_class = ProductSerializer
+
+    def get_permissions(self):
+        if self.request.method in ['PUT', 'PATCH', 'DELETE']:
+            return [IsAdminUser()]
+        return [AllowAny()]
 
     @extend_schema(
         summary='Получить продукт',

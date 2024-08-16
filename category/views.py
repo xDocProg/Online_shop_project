@@ -1,15 +1,19 @@
+from rest_framework.permissions import AllowAny, IsAdminUser
 from rest_framework import generics
 from .models import Category
 from .serializers import CategorySerializer
 from drf_spectacular.utils import extend_schema
-from rest_framework.permissions import AllowAny
 
 
 @extend_schema(tags=['Категории'])
 class CategoryAPIView(generics.ListCreateAPIView):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
-    permission_classes = [AllowAny]
+
+    def get_permissions(self):
+        if self.request.method in ['POST']:
+            return [IsAdminUser()]
+        return [AllowAny()]
 
     @extend_schema(
         summary='Получить список категорий',

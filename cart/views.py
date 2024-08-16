@@ -40,7 +40,18 @@ class AddToCartView(generics.CreateAPIView):
 
     def perform_create(self, serializer):
         cart, created = Cart.objects.get_or_create(user=self.request.user)
-        serializer.save(cart=cart)
+        product = serializer.validated_data['product']
+        quantity = serializer.validated_data['quantity']
+
+        # Проверяем, существует ли элемент корзины с этим продуктом
+        cart_item, created = CartItem.objects.get_or_create(cart=cart, product=product)
+
+        if not created:
+            cart_item.quantity += quantity
+            cart_item.save()
+        else:
+            cart_item.quantity = quantity
+            cart_item.save()
 
 
 # -------------------------------------------------------------------------
