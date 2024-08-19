@@ -11,6 +11,5 @@ class Category(models.Model):
         related_name='subcategories'
     )
 
-
     def __str__(self):
         return self.name
