@@ -1,8 +1,9 @@
 from drf_spectacular.utils import extend_schema, extend_schema_view
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.exceptions import ValidationError
 from cart.models import Cart
-from .models import Order
+from .models import Order, OrderItem
 from .serializers import OrderSerializer
 
 
@@ -29,8 +30,23 @@ class OrderListCreateView(generics.ListCreateAPIView):
 
     def perform_create(self, serializer):
         cart = Cart.objects.get(user=self.request.user)
-        total_price = cart.total_price()
-        serializer.save(user=self.request.user, cart=cart, total_price=total_price)
+
+        if not cart.cart_items.exists():
+            raise ValidationError(
+                'Невозможно оформить заказ. Корзина пуста."'
+            )
+
+        order = serializer.save(user=self.request.user, total_price=cart.total_price())
+
+        for item in cart.cart_items.all():
+            OrderItem.objects.create(
+                order=order,
+                product=item.product,
+                quantity=item.quantity,
+                price=item.price()
+            )
+
+        cart.cart_items.all().delete()
 
 
 @extend_schema(tags=['Заказы'])

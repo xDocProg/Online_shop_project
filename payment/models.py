@@ -4,9 +4,9 @@ from order.models import Order
 
 class Payment(models.Model):
     STATUS_CHOICES = [
-        ('pending', 'Ожидание'),
-        ('completed', 'Завершено'),
-        ('failed', 'Неудача'),
+        ('pending', 'Ожидается'),
+        ('success', 'Успешный'),
+        ('failed', 'Неудачный'),
         ('refunded', 'Возврат'),
     ]
 
