@@ -4,6 +4,7 @@ from .models import Cart, CartItem
 
 class CartItemSerializer(serializers.ModelSerializer):
     """ Сериализатор для элементов корзины пользователя """
+
     price = serializers.DecimalField(max_digits=10, decimal_places=2, read_only=True)
     product_name = serializers.CharField(source='product.name', read_only=True)
 

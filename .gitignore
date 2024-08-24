@@ -4,3 +4,4 @@ venv/
 .env
 db.sqlite3
 media/
+profanity_words.txt

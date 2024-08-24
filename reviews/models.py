@@ -1,6 +1,6 @@
 from django.db import models
-
 from products.models import Product
+from reviews.validators import validate_profanity
 from users.models import CustomUser
 
 
@@ -16,7 +16,7 @@ class Review(models.Model):
         (4, '4'),
         (5, '5'),
     ])
-    comment = models.TextField(blank=True, null=True)
+    comment = models.TextField(validators=[validate_profanity], blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
