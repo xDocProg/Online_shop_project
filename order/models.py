@@ -9,14 +9,17 @@ from users.models import CustomUser
 
 
 class Order(models.Model):
-    """ Модель заказа пользователя """
+    """
+    Модель заказа пользователя
+    """
 
     STATUS_CHOICES = [
         ('pending', 'Ожидание'),
         ('processing', 'В обработке'),
         ('shipped', 'Отправлено'),
         ('delivered', 'Доставлено'),
-        ('cancelled', 'Отменено')
+        ('cancelled', 'Отменено'),
+        ('received', 'Получено')
     ]
 
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
@@ -24,13 +27,26 @@ class Order(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
     total_price = models.DecimalField(max_digits=10, decimal_places=2, default=0.00, blank=True)
-    barcode = models.ImageField(upload_to='barcodes/', blank=True, null=True)
+    barcode_image = models.ImageField(upload_to='barcodes/', blank=True, null=True)
+    barcode_number = models.CharField(max_length=13, unique=True, blank=True, null=True)
 
     def __str__(self):
         return f'Заказ {self.id} от {self.user.email or self.user.phone}'
 
+    def generate_unique_barcode_number(self):
+        """
+        Генерация уникального номера штрих-кода.
+        """
+
+        while True:
+            barcode_data = ''.join(str(random.randint(0, 9)) for _ in range(12))
+            if not Order.objects.filter(barcode_number=barcode_data).exists():
+                return barcode_data
+
     def generate_barcode(self):
-        """Генерация штрих-кода для заказа."""
+        """
+        Генерация штрих-кода для заказа.
+        """
 
         barcode_data = ''.join(str(random.randint(0, 9)) for _ in range(12))
         ean = barcode.get('ean13', barcode_data, writer=ImageWriter())
@@ -38,16 +54,23 @@ class Order(models.Model):
 
         file_path = os.path.join(barcode_dir, f'{self.id}')
         ean.save(file_path)
-        self.barcode = f'barcodes/{self.id}.png'
+        self.barcode_image = f'barcodes/{self.id}.png'
+        self.barcode_number = barcode_data
+
+
 
 
 class OrderItem(models.Model):
+    """
+    Модель для элементов заказа
+    """
+
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='order_items')
     product = models.CharField(max_length=255)
-    quantity = models.PositiveIntegerField()
+    quantity = models.PositiveIntegerField(default=1)
     price = models.DecimalField(max_digits=10, decimal_places=2)
 
     def __str__(self):
-        return f'{self.quantity} of {self.product} in order {self.order.id}'
+        return f'{self.quantity} x {self.product} в заказе {self.order.id}'
 
 

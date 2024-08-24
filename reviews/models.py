@@ -1,6 +1,6 @@
 from django.db import models
 from products.models import Product
-from reviews.validators import validate_profanity
+from reviews.validators.validators_review import validate_profanity
 from users.models import CustomUser
 
 

@@ -1,6 +1,4 @@
 from rest_framework import serializers
-
-from cart.serializers import CartItemSerializer
 from .models import Order, OrderItem
 
 
@@ -17,8 +15,11 @@ class OrderSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Order
-        fields = ['id', 'user', 'status', 'created_at', 'updated_at', 'total_price', 'order_items', 'barcode']
-        read_only_fields = ['user', 'total_price', 'created_at', 'updated_at', 'barcode']
+        fields = [
+            'id', 'user', 'status', 'created_at', 'updated_at', 'total_price', 'order_items',
+            'barcode_image', 'barcode_number'
+        ]
+        read_only_fields = ['user', 'total_price', 'created_at', 'updated_at', 'barcode_image', 'barcode_number']
 
     def create(self, validated_data):
         # Создание нового заказа
@@ -27,7 +28,6 @@ class OrderSerializer(serializers.ModelSerializer):
         order.generate_barcode()
         order.save()
         return order
-
 
 
 

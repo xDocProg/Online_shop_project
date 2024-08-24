@@ -1,7 +1,9 @@
 from drf_spectacular.utils import extend_schema, extend_schema_view
-from rest_framework import generics
+from rest_framework import generics, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.exceptions import ValidationError
+from rest_framework.response import Response
+
 from cart.models import Cart
 from .models import Order, OrderItem
 from .serializers import OrderSerializer
@@ -76,4 +78,21 @@ class OrderDetailView(generics.RetrieveUpdateDestroyAPIView):
 
     def get_queryset(self):
         return Order.objects.filter(user=self.request.user)
+
+
+class OrderByBarcodeView(generics.RetrieveAPIView):
+    serializer_class = OrderSerializer
+    queryset = Order.objects.all()
+    lookup_field = 'barcode_number'
+
+    def get(self, request, *args, **kwargs):
+        try:
+            order = self.queryset.get(barcode_number=kwargs.get('barcode_number'))
+            serializer = self.get_serializer(order)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Order.DoesNotExist:
+            return Response(
+                {'detail': 'Заказ не найден'},
+                status=status.HTTP_404_NOT_FOUND
+            )
 

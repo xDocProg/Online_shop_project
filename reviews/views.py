@@ -1,7 +1,4 @@
 from drf_spectacular.utils import extend_schema_view, extend_schema
-from rest_framework.exceptions import ValidationError
-from rest_framework.response import Response
-
 from .serializers import ReviewSerializer
 from .models import Review
 from rest_framework import viewsets, status
