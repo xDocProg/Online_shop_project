@@ -60,3 +60,8 @@ class LoginSerializer(serializers.Serializer):
         raise serializers.ValidationError('Неправильно введенные данные')
 
 
+class ChangePasswordSerializer(serializers.Serializer):
+    old_password = serializers.CharField(required=True)
+    new_password = serializers.CharField(required=True)
+
+

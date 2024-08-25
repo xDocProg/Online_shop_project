@@ -1,11 +1,11 @@
 from django.utils.decorators import method_decorator
 from rest_framework import generics, status
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from .models import ConfirmationCode, CustomUser
-from .serializers import UserRegistrationSerializer, ConfirmEmailSerializer, LoginSerializer
+from .serializers import UserRegistrationSerializer, ConfirmEmailSerializer, ChangePasswordSerializer, LoginSerializer
 from drf_spectacular.utils import extend_schema
 from django_ratelimit.decorators import ratelimit
 
@@ -110,6 +110,39 @@ class LoginView(generics.GenericAPIView):
             },
             status=status.HTTP_200_OK
         )
+
+
+@extend_schema(
+    tags=['Вход и регистрация'],
+    summary='Смена пароля',
+    description='Позволяет пользователю сменить свой текущий пароль на новый.',
+    request=ChangePasswordSerializer
+)
+class ChangePasswordView(generics.UpdateAPIView):
+    """ APIView для смены пароля """
+
+    serializer_class = ChangePasswordSerializer
+    model = CustomUser
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self, queryset=None):
+        return self.request.user
+
+    def update(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        serializer = self.get_serializer(data=request.data)
+
+        if serializer.is_valid():
+            # Проверяем текущий пароль
+            if not self.object.check_password(serializer.data.get("old_password")):
+                return Response({"old_password": ["Неверный пароль."]}, status=status.HTTP_400_BAD_REQUEST)
+
+            # Устанавливаем новый пароль
+            self.object.set_password(serializer.data.get("new_password"))
+            self.object.save()
+            return Response({"detail": "Пароль успешно изменен."}, status=status.HTTP_200_OK)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 

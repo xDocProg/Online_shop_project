@@ -63,6 +63,8 @@ INSTALLED_APPS = [
     'debug_toolbar',
     'drf_spectacular',
     'rest_framework_simplejwt',
+    'rest_framework_simplejwt.token_blacklist',
+
     'corsheaders',
     'celery',
 ]
@@ -84,11 +86,12 @@ REST_FRAMEWORK = {
 
 
 SPECTACULAR_SETTINGS = {
-    'TITLE': 'Marketplace Test Swagger API',
+    'TITLE': 'Marketplace Swagger API',
     'DESCRIPTION': 'Marketplace Swagger API description',
     'VERSION': '1.0.0',
     'SERVE_INCLUDE_SCHEMA': False,
     'TAGS': [
+        {'name': 'api', 'description': 'JWTAuthentication'},
         {'name': 'Вход и регистрация', 'description': 'Аутентификация и регистрация пользователей.'},
         {'name': 'Профиль', 'description': 'Управление профилем пользователя.'},
         {'name': 'Категории', 'description': 'Управление категориями продуктов.'},
@@ -230,8 +233,8 @@ EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS', 'True').lower() in ['true', '1', 't']
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
-    "ROTATE_REFRESH_TOKENS": False,
-    "BLACKLIST_AFTER_ROTATION": False,
+    "ROTATE_REFRESH_TOKENS": True,
+    "BLACKLIST_AFTER_ROTATION": True,
     "UPDATE_LAST_LOGIN": False,
 
     "ALGORITHM": "HS256",
