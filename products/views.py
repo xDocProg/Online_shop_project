@@ -9,7 +9,7 @@ from .serializers import ProductSerializer
 
 @extend_schema(tags=['Продукты'])
 class ProductListCreateAPIView(generics.ListCreateAPIView):
-    queryset = Product.objects.annotate(average_rating=Avg('reviews__rating'))
+    queryset = Product.objects.annotate(average_rating=Avg('reviews__rating')).order_by('id')
     serializer_class = ProductSerializer
 
     def get_permissions(self):

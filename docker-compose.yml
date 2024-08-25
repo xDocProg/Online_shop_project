@@ -3,38 +3,49 @@ version: '3.8'
 services:
   web:
     build: .
-    environment:
-      - SECRET_KEY=${SECRET_KEY}
-      - EMAIL_HOST=${EMAIL_HOST}
-      - EMAIL_HOST_USER=${EMAIL_HOST_USER}
-      - EMAIL_HOST_PASSWORD=${EMAIL_HOST_PASSWORD}
-      - EMAIL_PORT=${EMAIL_PORT}
-      - EMAIL_USE_TLS=${EMAIL_USE_TLS}
+    env_file:
+      - .env
     command: >
-      sh -c "python manage.py migrate && gunicorn shop_project.wsgi:application --bind 0.0.0.0:8000"
+      sh -c "python manage.py migrate && python manage.py collectstatic --noinput && gunicorn shop_project.wsgi:application --bind 0.0.0.0:8000"
     volumes:
       - .:/app
+      - static_volume:/app/static
+      - media_volume:/app/media
     ports:
       - "8000:8000"
     depends_on:
       - redis
+      - db
 
   celery:
     build: .
-    environment:
-      - SECRET_KEY=${SECRET_KEY}
-      - EMAIL_HOST=${EMAIL_HOST}
-      - EMAIL_HOST_USER=${EMAIL_HOST_USER}
-      - EMAIL_HOST_PASSWORD=${EMAIL_HOST_PASSWORD}
-      - EMAIL_PORT=${EMAIL_PORT}
-      - EMAIL_USE_TLS=${EMAIL_USE_TLS}
+    env_file:
+      - .env
     command: celery -A shop_project worker --loglevel=info
     volumes:
       - .:/app
+      - media_volume:/app/media
     depends_on:
       - redis
+      - db
 
   redis:
     image: redis:latest
     ports:
       - "6379:6379"
+
+  db:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+volumes:
+  postgres_data:
+  static_volume:
+  media_volume:

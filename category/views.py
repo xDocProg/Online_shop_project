@@ -1,5 +1,9 @@
 from rest_framework.permissions import AllowAny, IsAdminUser
 from rest_framework import generics
+from rest_framework.response import Response
+
+from products.models import Product
+from products.serializers import ProductSerializer
 from .models import Category
 from .serializers import CategorySerializer
 from drf_spectacular.utils import extend_schema
@@ -7,7 +11,7 @@ from drf_spectacular.utils import extend_schema
 
 @extend_schema(tags=['Категории'])
 class CategoryAPIView(generics.ListCreateAPIView):
-    queryset = Category.objects.all()
+    queryset = Category.objects.all().order_by('id')
     serializer_class = CategorySerializer
 
     def get_permissions(self):
@@ -67,3 +71,28 @@ class CategoryDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     )
     def delete(self, request, *args, **kwargs):
         return self.destroy(request, *args, **kwargs)
+
+
+class CategoryProductsListView(generics.GenericAPIView):
+    """
+    APIView для отображения списка продуктов по определенной категории
+    """
+
+    serializer_class = ProductSerializer
+
+    @extend_schema(
+        tags=['Категории'],
+        summary='Получить продукты категории',
+        description='Получаем список продуктов по id категории',
+        request=ProductSerializer
+    )
+    def get(self, request, *args, **kwargs):
+        category_id = kwargs.get('category_id')
+        try:
+            category = Category.objects.get(id=category_id)
+        except Category.DoesNotExist:
+            return Response({'detail': 'Нет такой категории'}, status=404)
+
+        products = Product.objects.filter(category=category).order_by('-id')
+        serializer = self.get_serializer(products, many=True)
+        return Response(serializer.data)

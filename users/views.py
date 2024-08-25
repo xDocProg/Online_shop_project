@@ -128,6 +128,7 @@ class ChangePasswordView(generics.UpdateAPIView):
     def get_object(self, queryset=None):
         return self.request.user
 
+    @method_decorator(ratelimit(key='ip', rate='5/d', block=True))
     def update(self, request, *args, **kwargs):
         self.object = self.get_object()
         serializer = self.get_serializer(data=request.data)

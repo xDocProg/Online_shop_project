@@ -16,5 +16,11 @@ COPY . /app/
 # Устанавливаем зависимости Python
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Запускаем команду при запуске контейнера
-CMD ["sh", "-c", "python manage.py migrate && gunicorn shop_project.wsgi:application --bind 0.0.0.0:8000"]
+# Создаем директории для статики и медиа
+RUN mkdir -p /app/static /app/media
+
+# Устанавливаем права доступа
+RUN chown -R www-data:www-data /app/static /app/media
+
+# Выполняем миграции и собираем статику при запуске контейнера
+CMD ["sh", "-c", "python manage.py migrate && python manage.py collectstatic --noinput && gunicorn shop_project.wsgi:application --bind 0.0.0.0:8000"]

@@ -28,7 +28,7 @@ class OrderListCreateView(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        return Order.objects.filter(user=self.request.user)
+        return Order.objects.filter(user=self.request.user).order_by('-created_at')
 
     def perform_create(self, serializer):
         cart = Cart.objects.get(user=self.request.user)
