@@ -32,7 +32,7 @@ urlpatterns = [
     path('api/orders/', include('order.urls')),
     path('api/', include('reviews.urls')),
     path('api/cart/', include('cart.urls')),
-    path('api/', include('payment.urls')),
+    path('api/payment/', include('payment.urls')),
 
 
     # Автоматическая документация

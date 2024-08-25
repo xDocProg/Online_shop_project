@@ -39,7 +39,7 @@ class Order(models.Model):
         """
 
         while True:
-            barcode_data = ''.join(str(random.randint(0, 9)) for _ in range(12))
+            barcode_data = ''.join(str(random.randint(0, 9)) for _ in range(13))
             if not Order.objects.filter(barcode_number=barcode_data).exists():
                 return barcode_data
 
