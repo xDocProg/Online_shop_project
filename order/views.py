@@ -87,10 +87,18 @@ class OrderDetailView(generics.RetrieveUpdateDestroyAPIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
+@extend_schema(tags=['Заказы'])
+@extend_schema_view(
+    get=extend_schema(
+        summary='Получить описание заказа по штрихкоду',
+        description='Возвращает конкретный заказ по номеру штрихкода.'
+    ),
+)
 class OrderByBarcodeView(generics.RetrieveAPIView):
     serializer_class = OrderSerializer
     queryset = Order.objects.all()
     lookup_field = 'barcode_number'
+    permission_classes = [IsAuthenticated]
 
     def get(self, request, *args, **kwargs):
         try:

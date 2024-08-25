@@ -88,6 +88,17 @@ SPECTACULAR_SETTINGS = {
     'DESCRIPTION': 'Marketplace Swagger API description',
     'VERSION': '1.0.0',
     'SERVE_INCLUDE_SCHEMA': False,
+    'TAGS': [
+        {'name': 'Вход и регистрация', 'description': 'Аутентификация и регистрация пользователей.'},
+        {'name': 'Профиль', 'description': 'Управление профилем пользователя.'},
+        {'name': 'Категории', 'description': 'Управление категориями продуктов.'},
+        {'name': 'Продукты', 'description': 'Управление продуктами.'},
+        {'name': 'Корзина', 'description': 'Работа с корзиной покупок.'},
+        {'name': 'Заказы', 'description': 'Управление заказами пользователей.'},
+        {'name': 'Платежи', 'description': 'Обработка платежей.'},
+        {'name': 'Доставка', 'description': 'Управление доставкой заказов.'},
+        {'name': 'Отзывы', 'description': 'Работа с отзывами на продукты.'},
+    ],
     "SWAGGER_UI_SETTINGS": {
         "filter": True,
     },
