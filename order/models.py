@@ -48,7 +48,7 @@ class Order(models.Model):
         Генерация штрих-кода для заказа.
         """
 
-        barcode_data = ''.join(str(random.randint(0, 9)) for _ in range(12))
+        barcode_data = ''.join(str(random.randint(0, 9)) for _ in range(13))
         ean = barcode.get('ean13', barcode_data, writer=ImageWriter())
         barcode_dir = os.path.join(settings.MEDIA_ROOT, 'barcodes')
 
@@ -56,8 +56,6 @@ class Order(models.Model):
         ean.save(file_path)
         self.barcode_image = f'barcodes/{self.id}.png'
         self.barcode_number = barcode_data
-
-
 
 
 class OrderItem(models.Model):
