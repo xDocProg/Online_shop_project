@@ -1,4 +1,7 @@
 from rest_framework import serializers
+
+from delivery.models import Delivery
+from payment.models import Payment
 from .models import Order, OrderItem
 
 
@@ -28,6 +31,24 @@ class OrderSerializer(serializers.ModelSerializer):
         order.generate_barcode()
         order.save()
         return order
+
+    def update(self, instance, validated_data):
+        new_status = validated_data.get('status', instance.status)
+
+        # Проверяем, если статус меняется на 'received'
+        if new_status == 'received':
+            # Проверяем, есть ли успешная оплата для этого заказа
+            if not Payment.objects.filter(order=instance, status='success').exists():
+                raise serializers.ValidationError("Вы не можете получить товар, пока не оплатите заказ")
+
+            delivery = Delivery.objects.filter(order=instance).first()
+            if not delivery or delivery.status != 'delivered':
+                raise serializers.ValidationError("Вы не можете получить заказ так как ваш товар не доставлен")
+
+        # Обновляем статус и другие поля
+        instance.status = new_status
+        instance.save()
+        return instance
 
 
 

@@ -57,6 +57,7 @@ INSTALLED_APPS = [
     'reviews',
     'cart',
     'payment',
+    'delivery',
 
     'rest_framework',
     'debug_toolbar',
