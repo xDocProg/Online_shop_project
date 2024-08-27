@@ -1,6 +1,6 @@
 from drf_spectacular.utils import extend_schema, extend_schema_view
 from rest_framework import generics, status
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 
@@ -18,7 +18,6 @@ from .serializers import OrderSerializer
     post=extend_schema(
         summary='Создать новый заказ',
         description='Создает новый заказ для текущего пользователя.',
-        request=OrderSerializer
     )
 )
 class OrderListCreateView(generics.ListCreateAPIView):
@@ -60,12 +59,10 @@ class OrderListCreateView(generics.ListCreateAPIView):
     put=extend_schema(
         summary='Обновить заказ',
         description='Обновляет конкретный заказ текущего пользователя.',
-        request=OrderSerializer
     ),
     patch=extend_schema(
         summary='Частично обновить заказ',
         description='Частично обновляет конкретный заказ текущего пользователя.',
-        request=OrderSerializer
     ),
     delete=extend_schema(
         summary='Удалить заказ',
@@ -98,7 +95,7 @@ class OrderByBarcodeView(generics.RetrieveAPIView):
     serializer_class = OrderSerializer
     queryset = Order.objects.all()
     lookup_field = 'barcode_number'
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAdminUser]
 
     def get(self, request, *args, **kwargs):
         try:

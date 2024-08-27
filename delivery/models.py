@@ -36,4 +36,4 @@ class Delivery(models.Model):
                 order.save()
 
     def __str__(self):
-        return f'Доставка для заказа {self.order.id} - {self.get_status_display()}'
+        return f'Доставка для заказа {self.order.id}'

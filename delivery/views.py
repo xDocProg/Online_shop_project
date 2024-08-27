@@ -1,5 +1,7 @@
 from drf_spectacular.utils import extend_schema, extend_schema_view
 from rest_framework import viewsets, permissions
+from rest_framework.permissions import IsAdminUser, IsAuthenticated
+
 from order.models import Order
 from .models import Delivery
 from .serializers import DeliverySerializer
@@ -40,7 +42,11 @@ class DeliveryViewSet(viewsets.ModelViewSet):
 
     queryset = Delivery.objects.all().order_by('-updated_at')
     serializer_class = DeliverySerializer
-    permission_classes = [permissions.IsAuthenticated]
+
+    def get_permissions(self):
+        if self.request.method in ['PUT', 'PATCH',]:
+            return [IsAdminUser()]
+        return [IsAuthenticated()]
 
     def perform_create(self, serializer):
         order_id = self.request.data.get('order')

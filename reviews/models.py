@@ -18,6 +18,10 @@ class Review(models.Model):
     ])
     comment = models.TextField(validators=[validate_profanity], blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        unique_together = ('user', 'product')
 
     def __str__(self):
         return f'Отзыв от {self.user} к {self.product.name}'

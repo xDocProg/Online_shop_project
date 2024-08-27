@@ -31,31 +31,21 @@ class Order(models.Model):
     barcode_number = models.CharField(max_length=13, unique=True, blank=True, null=True)
 
     def __str__(self):
-        return f'Заказ {self.id} от {self.user.email or self.user.phone}'
-
-    def generate_unique_barcode_number(self):
-        """
-        Генерация уникального номера штрих-кода.
-        """
-
-        while True:
-            barcode_data = ''.join(str(random.randint(0, 9)) for _ in range(13))
-            if not Order.objects.filter(barcode_number=barcode_data).exists():
-                return barcode_data
+        return f'Заказ {self.id} от {self.user.email}'
 
     def generate_barcode(self):
         """
-        Генерация штрих-кода для заказа.
+        Генерация уникального номера штрих-кода и изображения штрих-кода для заказа.
         """
 
-        barcode_data = ''.join(str(random.randint(0, 9)) for _ in range(13))
+        barcode_data = ''.join(str(random.randint(0, 9)) for _ in range(12))
         ean = barcode.get('ean13', barcode_data, writer=ImageWriter())
         barcode_dir = os.path.join(settings.MEDIA_ROOT, 'barcodes')
-
         file_path = os.path.join(barcode_dir, f'{self.id}')
         ean.save(file_path)
+
         self.barcode_image = f'barcodes/{self.id}.png'
-        self.barcode_number = barcode_data
+        self.barcode_number = ean
 
 
 class OrderItem(models.Model):

@@ -61,6 +61,8 @@ class LoginSerializer(serializers.Serializer):
 
 
 class ChangePasswordSerializer(serializers.Serializer):
+    """ Создаем сериализатор для смены пароля """
+
     old_password = serializers.CharField(required=True)
     new_password = serializers.CharField(required=True)
 
